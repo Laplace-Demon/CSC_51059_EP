@@ -1,0 +1,49 @@
+# name: zhicheng.hui
+# ID: zhicheng.hui@polytechnique.edu
+# copy.ys:
+#   /* copy_block - Copy src to dest and return xor checksum of src */
+#   result = 0;
+#   while (len > 0) {
+#       int val = *src++;
+#       *dest++ = val;
+#       result ^= val;
+#       len--;
+#   }
+#
+# result stored in %rax
+# len stored in %rbx
+# val stored in %rcx
+# src stored in %rsi
+# dest stored in %rdi
+
+  irmovq $0, %rax
+  irmovq $3, %rbx
+  irmovq src, %rsi
+  irmovq dest, %rdi
+  irmovq $8, %r8
+  irmovq $1, %r9
+loop:  
+  andq   %rbx, %rbx
+  jle    end
+  mrmovq (%rsi), %rcx
+  addq   %r8, %rsi
+  rmmovq %rcx, (%rdi)
+  addq   %r8, %rdi
+  xorq   %rcx, %rax
+  subq   %r9, %rbx
+  jmp    loop
+end:
+  halt
+
+.align 8
+# Source block
+src:
+        .quad 0x00a
+        .quad 0x0b0
+        .quad 0xc00
+
+# Destination block
+dest:
+        .quad 0x111
+        .quad 0x222
+        .quad 0x333

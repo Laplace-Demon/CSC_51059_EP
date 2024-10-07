@@ -1,0 +1,17 @@
+                            | # name: zhicheng.hui
+                            | # ID: zhicheng.hui@polytechnique.edu
+                            | # expr.ys: compute y = x > 5 ? x+1 : x
+                            | # x stored in %rax
+0x000: 500f0001000000000000 |   mrmovq x, %rax
+0x00a: 30f3fbffffffffffffff |   irmovq $-5, %rbx
+0x014: 6003                 |   addq   %rax, %rbx
+0x016: 712b00000000000000   |   jle    end
+0x01f: 30f30100000000000000 |   irmovq $1, %rbx
+0x029: 6030                 |   addq   %rbx, %rax
+0x02b:                      | end:
+0x02b: 400f0801000000000000 |   rmmovq %rax, y
+0x035: 00                   |   halt
+                            | 
+0x100:                      | .pos 0x100
+0x100: ffffffffffffffff     | x: .quad -1
+0x108: 0000000000000000     | y: .quad 0x00

@@ -1,0 +1,47 @@
+                            | # copy.ys:
+                            | #   /* copy_block - Copy src to dest and return xor checksum of src */
+                            | #   result = 0;
+                            | #   while (len > 0) {
+                            | #       int val = *src++;
+                            | #       *dest++ = val;
+                            | #       result ^= val;
+                            | #       len--;
+                            | #   }
+                            | #
+                            | # result stored in %rax
+                            | # len stored in %rbx
+                            | # val stored in %rcx
+                            | # src stored in %rsi
+                            | # dest stored in %rdi
+                            | 
+0x000: 30f00000000000000000 |   irmovq $0, %rax
+0x00a: 30f30300000000000000 |   irmovq $3, %rbx
+0x014: 30f67000000000000000 |   irmovq src, %rsi
+0x01e: 30f78800000000000000 |   irmovq dest, %rdi
+0x028: 30f80800000000000000 |   irmovq $8, %r8
+0x032: 30f90100000000000000 |   irmovq $1, %r9
+0x03c:                      | loop:  
+0x03c: 6233                 |   andq   %rbx, %rbx
+0x03e: 716c00000000000000   |   jle    end
+0x047: 50160000000000000000 |   mrmovq (%rsi), %rcx
+0x051: 6086                 |   addq   %r8, %rsi
+0x053: 40170000000000000000 |   rmmovq %rcx, (%rdi)
+0x05d: 6087                 |   addq   %r8, %rdi
+0x05f: 6310                 |   xorq   %rcx, %rax
+0x061: 6193                 |   subq   %r9, %rbx
+0x063: 703c00000000000000   |   jmp    loop
+0x06c:                      | end:
+0x06c: 00                   |   halt
+                            | 
+0x070:                      | .align 8
+                            | # Source block
+0x070:                      | src:
+0x070: 0a00000000000000     |         .quad 0x00a
+0x078: b000000000000000     |         .quad 0x0b0
+0x080: 000c000000000000     |         .quad 0xc00
+                            | 
+                            | # Destination block
+0x088:                      | dest:
+0x088: 1101000000000000     |         .quad 0x111
+0x090: 2202000000000000     |         .quad 0x222
+0x098: 3303000000000000     |         .quad 0x333

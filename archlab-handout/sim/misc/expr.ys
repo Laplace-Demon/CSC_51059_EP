@@ -1,0 +1,17 @@
+# name: zhicheng.hui
+# ID: zhicheng.hui@polytechnique.edu
+# expr.ys: compute y = x > 5 ? x+1 : x
+# x stored in %rax
+  mrmovq x, %rax
+  irmovq $-5, %rbx
+  addq   %rax, %rbx
+  jle    end
+  irmovq $1, %rbx
+  addq   %rbx, %rax
+end:
+  rmmovq %rax, y
+  halt
+
+.pos 0x100
+x: .quad -1
+y: .quad 0x00
